@@ -16,12 +16,21 @@ $statement = $pdo->prepare('SELECT * FROM okjonl');
 $statement->execute();
 $posts = $statement->fetchAll();
 
+if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['DELETE'])){
+  $post_id = $_POST['post_id'];
+
+  $statement = $pdo->prepare('DELETE FROM okjonl where id = ?');
+  $statement->execute([$post_id]);
+  header("Location: blog.php");
+  exit;
+}
+
 ?>
 
 <main>
 
   <section class="py-5 text-center container">
-    <div class="row py-lg-5">
+    <div1 class="row py-lg-5">
       <div class="col-lg-6 col-md-8 mx-auto">
         <h1 class="fw-light">Post yaratish</h1>
         <p class="lead text-body-secondary">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
@@ -30,7 +39,7 @@ $posts = $statement->fetchAll();
           <a href="#" class="btn btn-secondary my-2">Secondary action</a>
         </p>
       </div>
-    </div>
+    </div1>
   </section>
 
   <div class="album py-5 bg-body-tertiary">
@@ -44,12 +53,19 @@ $posts = $statement->fetchAll();
           <div class="card shadow-sm">
             <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
             <div class="card-body">
-                <h3><?= $post['title'] ?></h3>
+               <a href="post.php?id=<?= $post['id'] ?>">
+                <h4><?= $post['title'] ?></h4>
+               </a>
               <p class="card-text"><?= $post['body'] ?></p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+               
+                 <a href="post-edit.php?id=<?= $post['id'] ?>"> <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button></a>
+                  <form method='POST' action="">
+                    <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+                    <input type="hidden" name='DELETE'>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">DELETE</button>
+                  </form>
                 </div>
                 <small class="text-body-secondary">9 mins</small>
               </div>
